@@ -5,6 +5,9 @@ verify_ssl = true
 
 [dev-packages]
 
+[scripts]
+start = "flask run --host=0.0.0.0"
+
 [packages]
 flask = "*"
 

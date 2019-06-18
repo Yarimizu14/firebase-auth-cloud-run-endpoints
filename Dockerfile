@@ -1,9 +1,17 @@
-FROM python:3.7.3-alpine3.9
+# Use the official Python image.
+# https://hub.docker.com/_/python
+FROM python:3.7
 
-RUN pip install pipenv
-COPY . /app
-WORKDIR /app
-RUN pipenv install
-EXPOSE 5000
+# Copy local code to the container image.
+ENV APP_HOME /app
+WORKDIR $APP_HOME
+COPY . .
 
-CMD ["pipenv", "run", "start"]
+# Install production dependencies.
+RUN pip install Flask gunicorn
+
+# Run the web service on container startup. Here we use the gunicorn
+# webserver, with one worker process and 8 threads.
+# For environments with multiple CPU cores, increase the number of workers
+# to be equal to the cores available.
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 app:app

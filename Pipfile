@@ -10,6 +10,8 @@ start = "python app.py"
 
 [packages]
 flask = "*"
+firebase-admin = "*"
+flask-cors = "==3.0.8"
 
 [requires]
 python_version = "3.7"

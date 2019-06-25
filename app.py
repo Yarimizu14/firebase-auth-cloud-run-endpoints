@@ -3,7 +3,7 @@ import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import firebase_admin
-from firebase_admin import credentials
+from firebase_admin import credentials, auth
 
 cred_path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
 if cred_path:
@@ -17,6 +17,20 @@ CORS(app)
 
 @app.route('/')
 def hello_world():
+    auth_header = request.headers.get('Authorization')
+    print(auth_header)
+    id_token = auth_header.split(' ')[1] if auth_header else None
+    if not auth_header:
+        return jsonify({
+            'message': 'please log in'
+        }), 401
+    try:
+        decoded_token = auth.verify_id_token(id_token)
+    except:
+        return jsonify({
+            'message': 'provided token is invalid'
+        }), 401
+    print(decoded_token)
     return jsonify({
         'message': 'Hello World!!'
     })
